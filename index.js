@@ -29,6 +29,10 @@ router.get('/clientes/:id?', (req, res) => { // ............................... 
     execSQLQuery('SELECT * FROM Clientes ' + filter, res); // ................. Chama a função que irá executar a query e retornara o valor solicitado, caso ele exista.
 });
 
+router.delete('/clientes/:id', (req, res) => { // ......................................... Define uma rota DELETE para 'clientes', onde será solicitado que seja deletado o cliente com o id expecífico.
+    execSQLQuery('DELETE FROM Clientes WHERE ID = ' + parseInt(req.params.id), res); // ... Chama a função que irá executar a query e deletar o cliente com o id.
+});
+
 
 
 app.use('/', router);

@@ -45,6 +45,22 @@ router.post('/clientes', (req, res) => { // ........... Define uma rota POST, on
     execSQLQuery(query, res); // ...................... Chama a função que irá executar a query e salvará o novo cliente.
 });
 
+/*OBS:
+    Para fazer updates podemos utilizar os verbos PUT ou PATCH. 
+    O Protocolo diz que devemos utilizar PUT se pretendemos passar
+    todos os os parâmetros da entidade que está sendo atualizada,
+    mas aqui jamais será atualizado o ID, então esta sendo utilizado
+    o PATCH.
+*/
+
+router.patch('/clientes/:id', (req, res) => { // ...................................................... Define uma rota PATCH, que receberá no corpo da requisição os dados a serem alterados.
+    const id = parseInt(req.params.id); // ............................................................ Recebe e tenta converter para int o ID.
+    const nome = req.body.nome.substring(0,150); // ................................................... Recebe e verifica a string do corpo da requisição referente ao nome.
+    const cpf = req.body.cpf.substring(0,11); // ...................................................... Recebe e verifica a string do corpo da requisição referente ao CPF.
+
+    execSQLQuery(`UPDATE Clientes SET Nome = '${nome}', CPF = '${cpf}' WHERE ID = ${id};`, res); // ... Chama a função que irá executar a query e irá alterar os dados no banco de dados.
+});
+
 app.use('/', router); // .............................. Faz a aplicação definir as rotas.
 
 // #######################################

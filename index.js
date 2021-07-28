@@ -33,26 +33,36 @@ router.delete('/clientes/:id', (req, res) => { // ..............................
     execSQLQuery('DELETE FROM Clientes WHERE ID = ' + parseInt(req.params.id), res); // ... Chama a função que irá executar a query e deletar o cliente com o id.
 });
 
+router.post('/clientes', (req, res) => { // ........... Define uma rota POST, onde será passado dados para criar o cadastro de um novo cliente.
+    let dados = { 
+        nome: req.body.nome.substring(0,150),
+        cpf : req.body.cpf.substring(0,11)
+    }; // ............................................. Variável que recebe dados enviado no corpo da requisição. 
 
+    let query = `INSERT INTO Clientes (nome, CPF) 
+    VALUES ( '${dados.nome}', '${dados.cpf}' )`; // ... Variável que monta a query para inserção.
 
-app.use('/', router);
+    execSQLQuery(query, res); // ...................... Chama a função que irá executar a query e salvará o novo cliente.
+});
+
+app.use('/', router); // .............................. Faz a aplicação definir as rotas.
 
 // #######################################
 
 
-function execSQLQuery(sqlQry, res) {
+function execSQLQuery(sqlQry, res) { // ......................... Função que cria a conexão com o banco de ddados e recebe a query a ser executa.
     const connection = mysql.createConnection({
         host: 'localhost',
         port: 3306,
         user: 'kaleostark',
         password: '',
         database: 'apiNode'
-    });
+    }); // ...................................................... String para conexão com o banco de dados.
 
-    connection.query(sqlQry, (error, results, fields) => {
-        if(error){ res.json(error); }
-        else{ res.json(results); }
+    connection.query(sqlQry, (error, results, fields) => { // ... Tenta fazer a conexão com o banco de dados, passando a string de conexão.
+        if(error){ res.json(error); } // ........................ Se houve erro na conexão, ele retorna o erro.
+        else{ res.json(results); } // ........................... Se houve sucesso ele retorna os dados referente ao sucesso.
 
-        connection.end();
+        connection.end(); // .................................... Finaliza a conexão.
     });
 }
